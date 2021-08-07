@@ -303,7 +303,6 @@ handleClick (Mouse1Drag (StartCoordinates start) (StopCoordinates stop)) =
         <> " to "
         <> show stop
     )
-
 ```
 
 None of these additions need to affect the other, distinct cases and making this a union we could
