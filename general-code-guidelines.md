@@ -11,6 +11,11 @@
       - [Shared behavior for an unknown set of types](#shared-behavior-for-an-unknown-set-of-types)
     - [Avoid abstracting data when you can](#avoid-abstracting-data-when-you-can)
     - [External testimonials/opinions about data](#external-testimonialsopinions-about-data)
+  - [Dependencies](#dependencies)
+    - [Data dependencies](#data-dependencies)
+      - [Constructors are king](#constructors-are-king)
+      - [Your data's validity is only as good as the validity of what it contains](#your-datas-validity-is-only-as-good-as-the-validity-of-what-it-contains)
+      - [A known and limited set of values in a type can often be hoisted to the type itself](#a-known-and-limited-set-of-values-in-a-type-can-often-be-hoisted-to-the-type-itself)
 
 ## The wrong abstraction is much worse than copy-pasting
 
