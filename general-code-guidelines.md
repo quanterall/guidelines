@@ -41,10 +41,10 @@ in one language. This is also why you should understand your data structures and
 characteristics when you use them.
 
 This extends also to user-defined types: "Structs" are named collections of known fields with
-associated values. "Unions" are named collections of cases where each case can carry different
-data with it. Most things fall into combinations of these two general concepts and if you design
-with that in mind, your ideas are transferrable to most technologies. Some of them make using these
-concepts much easier; it's advisable to use that fact.
+associated values. "(Tagged) Unions" are named collections of cases where each case can carry
+different data with it. Most things fall into combinations of these two general concepts and if you
+design with that in mind, your ideas are transferrable to most technologies. Some of them make using
+these concepts much easier; it's advisable to use that fact.
 
 ### Data is the same when it looks the same
 
