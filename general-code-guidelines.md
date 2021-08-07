@@ -117,3 +117,190 @@ be internal types used for additional typesafety in our plumbing.
 
 ["The Value of Values" by Rich Hickey](https://www.youtube.com/watch?v=-6BsiVyC1kM) talks about many
 of these points and more.
+
+## Dependencies
+
+Dependencies are important in programming. This section will not refer primarily to package
+dependencies, as you might think, but rather data and logic dependencies.
+
+### Data dependencies
+
+#### Constructors are king
+
+If I cannot have a thing of type `A` without also having a thing of type `B`, the most direct way to
+accomplish this is to have the value of type `B` in the constructor of `A`. If I can create a `B` I
+can then also create an `A`.
+
+Consider a "click event type" event:
+
+```typescript
+interface ClickEvent {
+  button: string;
+}
+
+function handleClick({button}: ClickEvent): void {
+  if (clickEvent.button === "mouse1") {
+    // What if this function can fail? The click event should never have been
+    // valid in the first place.
+    const coordinates = getMouseCoordinates();
+
+    console.log(`User left clicked @ ${coordinates}`)
+  }
+  
+  // ...
+}
+```
+
+It's clear in this case that a click event in most cases depends on coordinates. We want to instead
+say that in order to have a valid `ClickEvent` you should also have to have a set of `Coordinates`.
+
+```typescript
+interface ClickEvent {
+  button: string;
+  coordinates: Coordinates;
+}
+
+// We know here that we are passed a complete `ClickEvent` so we don't have to
+// even consider the case where `getMouseCoordinates` has failed.
+function handleClick({button, coordinates}: ClickEvent): void {
+  if (button === "mouse1") {
+    console.log(`User left clicked @ ${coordinates}`)
+  }
+  
+  // If this function needed to be defined for every possible input value, which
+  // values do we actually need to check here?
+}
+```
+
+#### Your data's validity is only as good as the validity of what it contains
+
+In our examples above our `button` field was of type `string`. This is a set of infinite values and
+we would require logic to actually check the data. It can be more useful to limit your type instead
+to a known set of values by way of a union type.
+
+```typescript
+type ClickButton = "mouse1" | "mouse2" | "mouse3";
+
+interface ClickEvent {
+  button: ClickButton;
+  coordinates: Coordinates;
+}
+
+function handleClick({button, coordinates}: ClickEvent): void {
+  // We can be confident that we have handled all possible cases of the click
+  // type here because we have made it so that you can only pass one of three
+  // different values in the constructor.
+  if (button === "mouse1") {
+    console.log(`User left clicked @ ${coordinates}`)
+  } else if (button === "mouse2") {
+    console.log(`User right clicked @ ${coordinates}`)
+  } else if (button === "mouse3") {
+    console.log(`User middle clicked @ ${coordinates}`)
+  } else {
+    // This is TypeScript specific and makes it so that we are always forced to
+    // handle all cases. This is very useful when one adds a case to
+    // `ClickButton`, because this code would then not compile and we would be
+    // reminded that we are expected to handle all cases of this union here.
+    return assertUnreachable(button);
+  }
+}
+```
+
+This concept applies in any language that allows you to statically determine that a value is of a
+given type, without having to deal with implicit type conversions that may give erroneous values. In
+Haskell this end result would look as follows:
+
+```haskell
+data ClickButton = Mouse1 | Mouse2 | Mouse3
+
+data ClickEvent = ClickEvent
+  { button :: ClickButton,
+    coordinates :: Coordinates
+  }
+
+handleClick :: ClickEvent -> IO ()
+handleClick ClickEvent {button = Mouse1, coordinates} =
+  putStrLn ("User left clicked @ " <> show coordinates)
+handleClick ClickEvent {button = Mouse2, coordinates} =
+  putStrLn ("User right clicked @ " <> show coordinates)
+handleClick ClickEvent {button = Mouse3, coordinates} =
+  putStrLn ("User middle clicked @ " <> show coordinates)
+```
+
+#### A known and limited set of values in a type can often be hoisted to the type itself
+
+Our `ClickEvent` contains the union of our different click buttons. This information could be put in
+the constructors of the click event by turning `ClickEvent` itself into a union:
+
+```haskell
+data ClickEvent
+  = Mouse1Click Coordinates
+  | Mouse2Click Coordinates
+  | Mouse3Click Coordinates
+
+handleClick :: ClickEvent -> IO ()
+handleClick (Mouse1Click coordinates) =
+  putStrLn ("User left clicked @ " <> show coordinates)
+handleClick (Mouse2Click coordinates) =
+  putStrLn ("User right clicked @ " <> show coordinates)
+handleClick (Mouse3Click coordinates) =
+  putStrLn ("User middle clicked @ " <> show coordinates)
+```
+
+We've now made it so that each event can carry different data, as they are not merely part of the
+same structure where all pieces of the data have to be present. Our data dependencies for the
+different click types can potentially change and differ from each other. Let's say, for example,
+that I wanted left clicks to also be able to take a modifier key into consideration:
+
+```haskell
+data ClickEvent
+  = Mouse1Click Coordinates ModifierKey
+  | Mouse2Click Coordinates
+  | Mouse3Click Coordinates
+
+handleClick :: ClickEvent -> IO ()
+handleClick (Mouse1Click coordinates modifierKey) =
+  putStrLn
+    ( "User left clicked @ " <> show coordinates
+        <> " with modifier key "
+        <> show modifierKey
+    )
+handleClick (Mouse2Click coordinates) =
+  putStrLn ("User right clicked @ " <> show coordinates)
+handleClick (Mouse3Click coordinates) =
+  putStrLn ("User middle clicked @ " <> show coordinates)
+```
+
+It also opens up for expressing more things without having to ignore parts of our data in many
+cases:
+
+```haskell
+data ClickEvent
+  = Mouse1Click Coordinates ModifierKey
+  | Mouse2Click Coordinates
+  | Mouse3Click Coordinates
+  | Mouse1Drag StartCoordinates StopCoordinates
+
+handleClick :: ClickEvent -> IO ()
+handleClick (Mouse1Click coordinates modifierKey) =
+  putStrLn
+    ( "User left clicked @ " <> show coordinates
+        <> " with modifier key "
+        <> show modifierKey
+    )
+handleClick (Mouse2Click coordinates) =
+  putStrLn ("User right clicked @ " <> show coordinates)
+handleClick (Mouse3Click coordinates) =
+  putStrLn ("User middle clicked @ " <> show coordinates)
+handleClick (Mouse1Drag (StartCoordinates start) (StopCoordinates stop)) =
+  putStrLn
+    ( "User dragged the left button from " <> show start
+        <> " to "
+        <> show stop
+    )
+
+```
+
+None of these additions need to affect the other, distinct cases and making this a union we could
+extend freely allowed us to add events that have more or different data than our previous
+definition.
