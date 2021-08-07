@@ -55,10 +55,10 @@ these concepts much easier; it's advisable to use that fact.
 
 Despite the best efforts of language creators, many languages still confuse the place of data with
 some supposed identity of that data. Data is equal to data that looks exactly like it. This concept
-is transferrable across time and place; data that is equal to data that looks like it will be equal
-when read from disk, read from a websocket or from a database, whenever you do happen to read it, be
-it tomorrow, next week or next year. This does not hold true when you start involving the place
-(pointer/instance) of data.
+is transferrable across time and place; if the equality of data is the equality of its parts it is
+also equal when it is read from disk, read from a websocket or from a database, be it tomorrow, next
+week or next year. This does not hold true when you start involving the place (pointer/instance) of
+data.
 
 If you make this mistake in one place, any place that uses that place is also affected. If the
 identity of a piece of data is based on a pointer or instance, anything that contains that data will
