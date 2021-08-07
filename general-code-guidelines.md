@@ -103,7 +103,7 @@ rules as a set of functions:
 
 ### Avoid abstracting data when you can
 
-It's tempting, to abstract over data as you do with functions. As an example of this, TypeScript
+It's tempting to abstract over data as you do with functions. As an example of this, TypeScript
 allows you to create new types by merging already existing types as well as even doing type-level
 logic to generate new types. This is very easy to misuse. Vastly prefer duplication over abstraction
 when it comes to data. If a type does not have a required field/component you will simply not be
