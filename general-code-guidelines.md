@@ -16,6 +16,7 @@
       - [Constructors are king](#constructors-are-king)
       - [Your data's validity is only as good as the validity of what it contains](#your-datas-validity-is-only-as-good-as-the-validity-of-what-it-contains)
       - [A known and limited set of values in a type can often be hoisted to the type itself](#a-known-and-limited-set-of-values-in-a-type-can-often-be-hoisted-to-the-type-itself)
+    - [Logical dependencies](#logical-dependencies)
 
 ## The wrong abstraction is much worse than copy-pasting
 
@@ -308,3 +309,39 @@ handleClick (Mouse1Drag (StartCoordinates start) (StopCoordinates stop)) =
 None of these additions need to affect the other, distinct cases and making this a union we could
 extend freely allowed us to add events that have more or different data than our previous
 definition.
+
+### Logical dependencies
+
+Functions and expressions also have dependencies. A function depends on all of the evaluated
+expressions in its function body.
+
+The clearest way to express that a function can do certain things is to take the interfaces to
+those things as parameters to the function. Compare:
+
+```typescript
+export async function runTransformation(
+  dynamoDB: DynamoDB,
+  s3: S3,
+  sns: SNS,
+  aurora: AuroraDataAPI,
+  transformation: Transformation,
+  reference: Option<ReferenceKey>,
+  timestamp: Date,
+  timeDelta: Milliseconds,
+): Promise<Result<FileStorageObject[], RunTransformationError>> { ... }
+```
+
+```typescript
+export async function runTransformation(
+  transformation: Transformation,
+  reference: Option<ReferenceKey>,
+  timestamp: Date,
+  timeDelta: Milliseconds,
+): Promise<Result<FileStorageObject[], RunTransformationError>> { ... }
+```
+
+Of the above functions, it should be immediately obvious that the first one informs the reader and
+caller of the function much more about what is potentially happening in the function body. The same
+concept that applies to data dependencies also applies here to logical dependencies; when we take
+these as parameters the caller will supply valid instances of them so the function itself does not
+need to concern itself with the possible failure of creating these internally.
