@@ -17,6 +17,9 @@
       - [Your data's validity is only as good as the validity of what it contains](#your-datas-validity-is-only-as-good-as-the-validity-of-what-it-contains)
       - [A known and limited set of values in a type can often be hoisted to the type itself](#a-known-and-limited-set-of-values-in-a-type-can-often-be-hoisted-to-the-type-itself)
     - [Logical dependencies](#logical-dependencies)
+  - [Don't use floating-point for money](#dont-use-floating-point-for-money)
+    - [Library examples for money](#library-examples-for-money)
+    - [Library examples for decimal numbers](#library-examples-for-decimal-numbers)
 
 ## The wrong abstraction is much worse than copy-pasting
 
@@ -345,3 +348,30 @@ caller of the function much more about what is potentially happening in the func
 concept that applies to data dependencies also applies here to logical dependencies; when we take
 these as parameters the caller will supply valid instances of them so the function itself does not
 need to concern itself with the possible failure of creating these internally.
+
+## Don't use floating-point for money
+
+When it comes to calculations that need to be precise floating-point numbers don't really suffice
+because they have fairly limited precision. A better idea is to use a library that provides a
+decimal type or something like it, preferably even a specific money type, that allows for keeping
+precision across many calculations.
+
+Many ecosystems have libraries like these and it can be a very useful thing to use these from the
+beginning to avoid entrenching yourself in a bad choice and having to do a big migration to fix
+this choice.
+
+### Library examples for money
+
+- Elixir: [ex_money](https://hex.pm/packages/ex_money)
+- JavaScript: TBD
+- Haskell: [safe-money](https://hackage.haskell.org/package/safe-money)
+
+### Library examples for decimal numbers
+
+Sometimes you need to do calculations but these might not be specifically for money. You might still
+want higher precision for these and for that there is usually a decimal library in whatever
+ecosystem you're working in.
+
+- Elixir: [decimal](https://hex.pm/packages/decimal)
+- JavaScript: TBD
+- Haskell: [safe-decimal](https://hackage.haskell.org/package/safe-decimal)
