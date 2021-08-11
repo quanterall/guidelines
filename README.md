@@ -3,6 +3,7 @@
 - [Guidelines](#guidelines)
   - [The most important guideline](#the-most-important-guideline)
   - [General code guidelines](#general-code-guidelines)
+  - [Project guidelines](#project-guidelines)
 
 The goal of this repository is to hold a current view of general guidelines that
 are useful to consider for development on Quanterall projects, for the benefit
@@ -20,3 +21,7 @@ where they simply can't apply without trading off something else that is also im
 
 [This file](./general-code-guidelines.md) describes a currently incomplete set of principles and
 guidelines that are worth considering and reflecting on.
+
+## Project guidelines
+
+[This file](./projects.md) has guidelines for general project management and interaction.
