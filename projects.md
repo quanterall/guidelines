@@ -3,6 +3,7 @@
 - [Project guidelines](#project-guidelines)
   - [Disclaimer](#disclaimer)
   - [Don't be a Tommy and don't let others be either](#dont-be-a-tommy-and-dont-let-others-be-either)
+  - [Make your branches/work visible](#make-your-brancheswork-visible)
 
 ## Disclaimer
 
@@ -35,3 +36,13 @@ concrete terms. Short variable names are unreadable because they require you to 
 surrounding context in order to see what they mean and the team member likely would have been able
 to articulate this. In this particular example the only correct move from Tommy's side would've been
 to **fix the code**.
+
+## Make your branches/work visible
+
+No one will magically know that you have work done on something unless you make a pull request. You
+can make it a WIP ("work in progress") PR or use a service-specific "Draft" PR status to make it
+clear that it's not yet done. Making things visible will:
+
+1. Give people in the team a chance to look at your code for learning and discussion purposes.
+2. Notify people as early as possible what you are going to be changing and how. Even if you are not
+   done with what you're doing, you'll signal the theme of your changes so far.
