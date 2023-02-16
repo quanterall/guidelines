@@ -35,8 +35,8 @@ support.
 
 ### External testimonials/opinions about abstractions
 
-See for example [this video](https://youtu.be/17KCHwOwgms) for an example of why this
-principle is worth considering and adopting.
+["The Wet codebase" by Dan Abramov](https://youtu.be/17KCHwOwgms) talks about these ideas and
+considerations.
 
 ## Data is the ideal
 
