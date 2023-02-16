@@ -35,7 +35,7 @@ support.
 
 ### External testimonials/opinions about abstractions
 
-See for example [this video](https://www.youtube.com/watch?v=sYZanbXKb3s) for an example of why this
+See for example [this video](https://youtu.be/17KCHwOwgms) for an example of why this
 principle is worth considering and adopting.
 
 ## Data is the ideal
